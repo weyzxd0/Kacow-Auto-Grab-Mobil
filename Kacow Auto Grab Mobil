@@ -1,0 +1,156 @@
+print("Made by kacow")
+
+pcall(function()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Script by kacow",
+        Text = "Premium Instant E Loaded",
+        Duration = 5
+    })
+end)
+
+local Player = game:GetService("Players").LocalPlayer
+local PPS = game:GetService("ProximityPromptService")
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local UI_Target = Player:WaitForChild("PlayerGui")
+if UI_Target:FindFirstChild("WEYZ_UI") then
+    UI_Target.WEYZ_UI:Destroy()
+end
+
+local sg = Instance.new("ScreenGui", UI_Target)
+sg.Name = "WEYZ_UI"
+sg.ResetOnSpawn = false
+
+-- PANEL
+local Main = Instance.new("Frame", sg)
+Main.Size = UDim2.new(0, 220, 0, 90)
+Main.Position = UDim2.new(0.5, -110, 0, -100)
+Main.BackgroundColor3 = Color3.fromRGB(20,20,25)
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0,14)
+
+-- Sürüklenebilir panel
+Main.Active = true
+Main.Draggable = true
+
+-- RGB Başlık
+local TitleBG = Instance.new("Frame", Main)
+TitleBG.Size = UDim2.new(1,0,0,40)
+TitleBG.Position = UDim2.new(0,0,0,5)
+Instance.new("UICorner", TitleBG).CornerRadius = UDim.new(0,12)
+
+local Title = Instance.new("TextLabel", TitleBG)
+Title.Size = UDim2.new(1,0,1,0)
+Title.BackgroundTransparency = 1
+Title.Text = "Script by kacow"
+Title.TextColor3 = Color3.new(1,1,1)
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBlack
+
+local colors = {
+	Color3.fromRGB(255,0,0),
+	Color3.fromRGB(255,150,0),
+	Color3.fromRGB(0,255,0),
+	Color3.fromRGB(0,255,255),
+	Color3.fromRGB(0,0,255),
+	Color3.fromRGB(255,0,255)
+}
+
+task.spawn(function()
+	local i = 1
+	while true do
+		TweenService:Create(TitleBG, TweenInfo.new(0.4), {
+			BackgroundColor3 = colors[i]
+		}):Play()
+		i += 1
+		if i > #colors then i = 1 end
+		task.wait(0.4)
+	end
+end)
+
+-- STATUS
+local StatusLabel = Instance.new("TextLabel", Main)
+StatusLabel.Size = UDim2.new(1,-20,0,30)
+StatusLabel.Position = UDim2.new(0,10,0,50)
+StatusLabel.BackgroundColor3 = Color3.fromRGB(15,15,15)
+StatusLabel.Text = "INSTANT E: OFF [Q]"
+StatusLabel.Font = Enum.Font.GothamBold
+StatusLabel.TextColor3 = Color3.fromRGB(255,70,70)
+StatusLabel.TextScaled = true
+Instance.new("UICorner", StatusLabel)
+
+TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Back), {
+	Position = UDim2.new(0.5, -110, 0, 30)
+}):Play()
+
+-- LOGIC
+local IsActive = false
+
+local function toggle()
+	IsActive = not IsActive
+	
+	if IsActive then
+		StatusLabel.Text = "INSTANT E: ACTIVE"
+		StatusLabel.TextColor3 = Color3.fromRGB(0,255,170)
+	else
+		StatusLabel.Text = "INSTANT E: OFF [Q]"
+		StatusLabel.TextColor3 = Color3.fromRGB(255,70,70)
+	end
+end
+
+UIS.InputBegan:Connect(function(i, p)
+	if not p and i.KeyCode == Enum.KeyCode.Q then
+		toggle()
+	end
+end)
+
+-- 🔥 BURASI ÖNEMLİ (PET ANINDA ALMA FIX)
+PPS.PromptButtonHoldBegan:Connect(function(prompt)
+	if IsActive then
+		prompt.HoldDuration = 0
+		task.spawn(function()
+			prompt:InputHoldBegin()
+			prompt:InputHoldEnd()
+			if fireproximityprompt then
+				fireproximityprompt(prompt)
+			end
+		end)
+	end
+end)
+
+PPS.PromptShown:Connect(function(prompt)
+	if IsActive then
+		prompt.HoldDuration = 0
+	end
+end)
+
+-- 📱 RGB MOBİL Q BUTONU
+local MobileBtn = Instance.new("TextButton")
+MobileBtn.Parent = sg
+MobileBtn.Size = UDim2.new(0,80,0,80)
+MobileBtn.Position = UDim2.new(1,-110,1,-150)
+MobileBtn.Text = "Q"
+MobileBtn.TextScaled = true
+MobileBtn.Font = Enum.Font.GothamBlack
+MobileBtn.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", MobileBtn).CornerRadius = UDim.new(1,0)
+
+-- RGB animasyon
+task.spawn(function()
+	local i = 1
+	while true do
+		TweenService:Create(MobileBtn, TweenInfo.new(0.4), {
+			BackgroundColor3 = colors[i]
+		}):Play()
+		i += 1
+		if i > #colors then i = 1 end
+		task.wait(0.4)
+	end
+end)
+
+MobileBtn.MouseButton1Click:Connect(function()
+	toggle()
+end)
+
+MobileBtn.Active = true
+MobileBtn.Draggable = true
